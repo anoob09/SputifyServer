@@ -8,9 +8,10 @@ app = Flask(__name__)
 def login():
     print(request.is_json)
     content = request.get_json()
+    print(content);
     print(content["username"])
     print(content["token"])
     return "ALL GOOD"
 
 if __name__ == "__main__":
-	app.run(host='192.168.0.102', port=4000, debug=True)
+	app.run(host='192.168.0.102', port=5000, debug=True)
