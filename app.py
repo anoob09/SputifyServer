@@ -53,6 +53,9 @@ def login():
 
     # Get refresh token for all users and use them to get new token
     users = Users1.query.all()
+    user_names = []
+    song_names = []
+    song_urls = []
     for user in users:
         
         # Refresh access token
@@ -104,9 +107,12 @@ def login():
                     recently_played_json = response.json()
                     song_name = recently_played_json["items"][0]["track"]["name"]
                     song_url = recently_played_json["items"][0]["track"]["external_urls"]["spotify"]
-            print(song_name)
-            print(song_url)
-
+            user_names.append(user_name)
+            song_names.append(song_name)
+            song_urls.append(song_url)        
+    print(user_names)
+    print(song_names)
+    print(song_urls)
     return "ALL GOOD"
 
 if __name__ == "__main__":
