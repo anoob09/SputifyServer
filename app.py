@@ -3,13 +3,13 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 from flask_sqlalchemy import SQLAlchemy
 import os
 import requests
+from db_app import Users1
+from db_app import db
+from db_app import app
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://localhost:3306/sputify'
-db = SQLAlchemy(app)
 refreshTokenURL = "https://accounts.spotify.com/api/token"
-# client_id = 
-
+client_id = 'MGVkNjlhMTNmNDMyNGIxZmEwMmE0Y2YyNmExMWJiYTk6ZTI2MTJkOTFiMGM5NGE4MDg3NzJhMWI5M2NiM2IyYzk='
+db.create_all()
 
 @app.route('/', methods=['POST']) 
 def login():
@@ -21,15 +21,13 @@ def login():
 
     # Get access_token and refresh_token using authorization_code
     headers = {
-        'Authorization': 'Basic MGVkNjlhMTNmNDMyNGIxZmEwMmE0Y2YyNmExMWJiYTk6ZTI2MTJkOTFiMGM5NGE4MDg3NzJhMWI5M2NiM2IyYzk=',
+        'Authorization': 'Basic '+ client_id,
     }
-
     data = {
       'grant_type': 'authorization_code',
       'code': code,
       'redirect_uri': 'https://eflask-app-1.herokuapp.com/'
     }
-
     response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
     token_json = response.json()
     token = token_json["access_token"]
@@ -40,12 +38,16 @@ def login():
     headers = {
         'Authorization': 'Bearer '+ token,
     }
-
     response = requests.get('https://api.spotify.com/v1/me', headers=headers)
-
-    print(response.json())
-
-
+    user_data_json = response.json()
+    user_id = user_data_json["id"]
+    
+    # Remove user if already present in Databse
+    user = Users1.query.filter_by(userid='anoob1').first()
+    if user is not None:
+        Users1.query.filter_by(userid=user_id).delete()
+        db.session.commit()
+    
     return "ALL GOOD"
 
 if __name__ == "__main__":
