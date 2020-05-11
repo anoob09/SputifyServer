@@ -1,16 +1,37 @@
 from flask import Flask
 from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask_sqlalchemy import SQLAlchemy
 import os
+import requests
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://localhost:3306/sputify'
+db = SQLAlchemy(app)
+refreshTokenURL = "https://accounts.spotify.com/api/token"
+# client_id = 
 
-@app.route('/', methods=['POST'])
+
+@app.route('/', methods=['POST']) 
 def login():
-    print(request.is_json)
     content = request.get_json()
-    print(content);
-    print(content["username"])
-    print(content["token"])
+    code = content["code"]
+    latitude = content["latitude"]
+    longitude = content["longitude"]
+    import requests
+
+    headers = {
+        'Authorization': 'Basic MGVkNjlhMTNmNDMyNGIxZmEwMmE0Y2YyNmExMWJiYTk6ZTI2MTJkOTFiMGM5NGE4MDg3NzJhMWI5M2NiM2IyYzk=',
+    }
+
+    data = {
+      'grant_type': 'authorization_code',
+      'code': code,
+      'redirect_uri': 'https://eflask-app-1.herokuapp.com/'
+    }
+
+    response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
+    print(response.json())
+
     return "ALL GOOD"
 
 if __name__ == "__main__":
