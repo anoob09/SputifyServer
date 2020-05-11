@@ -51,7 +51,7 @@ def login():
     db.session.add(new_user)
     db.session.commit()
 
-    # Get all users from Database and get details of all the users
+    # Get refresh token for all users and use them to get new token
     users = Users1.query.all()
     for user in users:
         user_refresh_token = user.refreshtoken
@@ -67,7 +67,18 @@ def login():
 
         response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
         refreshed_token_json = response.json()
-        print(refreshed_token_json)
+        if (response.status_code == 200):
+            # print(refreshed_token_json)
+            new_access_token = refreshed_token_json["access_token"]
+
+            headers = {
+                'Authorization': 'Bearer '+ new_access_token,
+            }
+            response = requests.get('https://api.spotify.com/v1/me', headers=headers)
+            personal_info_json = response.json()
+            name = personal_info_json["display_name"]
+            print(name)
+        
 
     return "ALL GOOD"
 
