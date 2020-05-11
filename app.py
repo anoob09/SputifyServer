@@ -41,13 +41,34 @@ def login():
     response = requests.get('https://api.spotify.com/v1/me', headers=headers)
     user_data_json = response.json()
     user_id = user_data_json["id"]
-    
+
     # Remove user if already present in Databse
     user = Users1.query.filter_by(userid='anoob1').first()
     if user is not None:
         Users1.query.filter_by(userid=user_id).delete()
         db.session.commit()
-    
+    new_user = Users1(userid = user_id, refreshtoken = refresh_token, latitude = latitude, longitude = longitude, city = "mumbai")
+    db.session.add(new_user)
+    db.session.commit()
+
+    # Get all users from Database and get details of all the users
+    users = Users1.query.all()
+    for user in users:
+        user_refresh_token = user.refreshtoken
+
+    #     headers = {
+    #         'Authorization': 'Basic ' + client_id,
+    #     }
+
+    #     data = {
+    #       'grant_type': 'refresh_token',
+    #       'refresh_token': user_refresh_token 
+    #     }
+
+    #     response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
+    #     refreshed_token_json = response.json()
+    #     print(refreshed_token_json)
+
     return "ALL GOOD"
 
 if __name__ == "__main__":
