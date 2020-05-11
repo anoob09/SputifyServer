@@ -78,7 +78,7 @@ def login():
             }
             response = requests.get('https://api.spotify.com/v1/me', headers=headers)
             personal_info_json = response.json()
-            name = personal_info_json["display_name"]
+            user_name = personal_info_json["display_name"]
             
             # Get current playing 
             headers = {
@@ -86,9 +86,13 @@ def login():
             }
             response = requests.get('https://api.spotify.com/v1/me/player/currently-playing', headers=headers)
             print(response.status_code)
+            song_name = ""
+            song_url = ""
             if (response.status_code == 200):
                 current_playing_json = response.json()
-                print(current_playing_json)
+                song_name = current_playing_json["item"]["name"]
+                song_url = current_playing_json["item"]["album"]["external_urls"]["spotify"]
+                print(song_url)
 
         
 
