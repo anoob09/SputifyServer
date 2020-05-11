@@ -54,6 +54,8 @@ def login():
     # Get refresh token for all users and use them to get new token
     users = Users1.query.all()
     for user in users:
+        
+        # Refresh access token
         user_refresh_token = user.refreshtoken
 
         headers = {
@@ -65,10 +67,10 @@ def login():
           'refresh_token': user_refresh_token 
         }
 
+        # Get personal info
         response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
-        refreshed_token_json = response.json()
         if (response.status_code == 200):
-            # print(refreshed_token_json)
+            refreshed_token_json = response.json()
             new_access_token = refreshed_token_json["access_token"]
 
             headers = {
@@ -77,7 +79,17 @@ def login():
             response = requests.get('https://api.spotify.com/v1/me', headers=headers)
             personal_info_json = response.json()
             name = personal_info_json["display_name"]
-            print(name)
+            
+            # Get current playing 
+            headers = {
+                'Authorization': 'Bearer ' + new_access_token,
+            }
+            response = requests.get('https://api.spotify.com/v1/me/player/currently-playing', headers=headers)
+            print(response.status_code)
+            if (response.status_code == 200):
+                current_playing_json = response.json()
+                print(current_playing_json)
+
         
 
     return "ALL GOOD"
