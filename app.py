@@ -56,18 +56,18 @@ def login():
     for user in users:
         user_refresh_token = user.refreshtoken
 
-    #     headers = {
-    #         'Authorization': 'Basic ' + client_id,
-    #     }
+        headers = {
+            'Authorization': 'Basic ' + client_id,
+        }
 
-    #     data = {
-    #       'grant_type': 'refresh_token',
-    #       'refresh_token': user_refresh_token 
-    #     }
+        data = {
+          'grant_type': 'refresh_token',
+          'refresh_token': user_refresh_token 
+        }
 
-    #     response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
-    #     refreshed_token_json = response.json()
-    #     print(refreshed_token_json)
+        response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
+        refreshed_token_json = response.json()
+        print(refreshed_token_json)
 
     return "ALL GOOD"
 
