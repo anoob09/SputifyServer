@@ -19,6 +19,7 @@ def login():
     longitude = content["longitude"]
     import requests
 
+    # Get access_token and refresh_token using authorization_code
     headers = {
         'Authorization': 'Basic MGVkNjlhMTNmNDMyNGIxZmEwMmE0Y2YyNmExMWJiYTk6ZTI2MTJkOTFiMGM5NGE4MDg3NzJhMWI5M2NiM2IyYzk=',
     }
@@ -30,7 +31,20 @@ def login():
     }
 
     response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
+    token_json = response.json()
+    token = token_json["access_token"]
+    refresh_token = token_json["refresh_token"]
+
+    # Get user profile details using access_token
+
+    headers = {
+        'Authorization': 'Bearer '+ token,
+    }
+
+    response = requests.get('https://api.spotify.com/v1/me', headers=headers)
+
     print(response.json())
+
 
     return "ALL GOOD"
 
