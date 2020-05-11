@@ -72,7 +72,7 @@ def login():
         if (response.status_code == 200):
             refreshed_token_json = response.json()
             new_access_token = refreshed_token_json["access_token"]
-
+            print(new_access_token)
             headers = {
                 'Authorization': 'Bearer '+ new_access_token,
             }
@@ -85,16 +85,27 @@ def login():
                 'Authorization': 'Bearer ' + new_access_token,
             }
             response = requests.get('https://api.spotify.com/v1/me/player/currently-playing', headers=headers)
-            print(response.status_code)
             song_name = ""
             song_url = ""
+
+            # Get current playing
             if (response.status_code == 200):
                 current_playing_json = response.json()
                 song_name = current_playing_json["item"]["name"]
                 song_url = current_playing_json["item"]["album"]["external_urls"]["spotify"]
-                print(song_url)
+            # Get recetly played
+            else:
+                headers = {
+                    'Authorization': 'Bearer ' + new_access_token,
+                }
 
-        
+                response = requests.get('https://api.spotify.com/v1/me/player/recently-played', headers=headers)
+                if (response.status_code == 200):
+                    recently_played_json = response.json()
+                    song_name = recently_played_json["items"][0]["track"]["name"]
+                    song_url = recently_played_json["items"][0]["track"]["external_urls"]["spotify"]
+            print(song_name)
+            print(song_url)
 
     return "ALL GOOD"
 
