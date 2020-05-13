@@ -95,8 +95,9 @@ def login():
             # Get current playing
             if (response.status_code == 200):
                 current_playing_json = response.json()
+                print(current_playing_json)
                 song_name = current_playing_json["item"]["name"]
-                song_url = current_playing_json["item"]["album"]["external_urls"]["spotify"]
+                song_url = current_playing_json["item"]["uri"]
                 album_url = current_playing_json["item"]["album"]["images"][-1]["url"]
             # Get recetly played
             else:
@@ -107,8 +108,9 @@ def login():
                 response = requests.get('https://api.spotify.com/v1/me/player/recently-played', headers=headers)
                 if (response.status_code == 200):
                     recently_played_json = response.json()
+                    print(recently_played_json)
                     song_name = recently_played_json["items"][0]["track"]["name"]
-                    song_url = recently_played_json["items"][0]["track"]["external_urls"]["spotify"]
+                    song_url = recently_played_json["items"][0]["track"]["uri"]
                     album_url = recently_played_json["items"][0]["track"]["album"]["images"][-2]["url"]
             user_names.append(user_name)
             song_names.append(song_name)
