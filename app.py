@@ -56,6 +56,7 @@ def login():
     user_names = []
     song_names = []
     song_urls = []
+    album_urls = []
     for user in users:
         
         # Refresh access token
@@ -90,12 +91,13 @@ def login():
             response = requests.get('https://api.spotify.com/v1/me/player/currently-playing', headers=headers)
             song_name = ""
             song_url = ""
-
+            album_url = ""
             # Get current playing
             if (response.status_code == 200):
                 current_playing_json = response.json()
                 song_name = current_playing_json["item"]["name"]
                 song_url = current_playing_json["item"]["album"]["external_urls"]["spotify"]
+                album_url = current_playing_json["item"]["album"]["images"][-1]["url"]
             # Get recetly played
             else:
                 headers = {
@@ -107,13 +109,16 @@ def login():
                     recently_played_json = response.json()
                     song_name = recently_played_json["items"][0]["track"]["name"]
                     song_url = recently_played_json["items"][0]["track"]["external_urls"]["spotify"]
+                    album_url = recently_played_json["items"][0]["track"]["album"]["images"][-2]["url"]
             user_names.append(user_name)
             song_names.append(song_name)
-            song_urls.append(song_url)        
-    print(user_names)
-    print(song_names)
-    print(song_urls)
-    return "ALL GOOD"
+            song_urls.append(song_url)
+            album_urls.append(album_url)        
+    # print(user_names)
+    # print(song_names)
+    # print(song_urls)
+    return_json = {"users" : user_names, "song_names" : song_names, "song_urls" : song_urls, "album_urls" : album_urls}
+    return return_json
 
 if __name__ == "__main__":
 	app.run(host='192.168.43.57', port=5000, debug=True)
