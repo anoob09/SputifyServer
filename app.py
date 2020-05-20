@@ -45,7 +45,7 @@ def login():
     user_id = user_data_json["id"]
 
     # Remove user if already present in Databse
-    user = Users1.query.filter_by(userid='anoob1').first()
+    user = Users1.query.filter_by(userid=user_id).first()
     if user is not None:
         Users1.query.filter_by(userid=user_id).delete()
         db.session.commit()
